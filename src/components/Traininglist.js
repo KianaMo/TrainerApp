@@ -11,14 +11,16 @@ import { API_URL } from "../constants";
 
 
 function Traininglist() {
-    const [training, setTraining] = useState([]);
-    const [open, setOpen] = useState(false)
+    const [trainings, setTrainings] = useState([]);
+    const [toggleCustomers, setToggleCustomers] = useState(false);
+    const [open, setOpen] = useState(false);
     const [message, setMessage] = useState("");
 
     const [columnDefs] = useState([
         { field: 'date', sortable: true, filter: true },
         { field: 'duration', sortable: true, filter: true },
         { field: 'activity', sortable: true, filter: true },
+        { field: 'name', sortable: true, filter: true, width: 100 },
         {
             cellRenderer: params => <EditTraining params={params.data} updateTraining={updateTraining} />,
             width: 120
@@ -29,7 +31,7 @@ function Traininglist() {
         }
     ])
 
-    const getTraining = () => {
+    const getTrainings = () => {
         fetch('http://traineeapp.azurewebsites.net/api/trainings')
             .then(response => {
                 if (response.ok)
@@ -37,8 +39,23 @@ function Traininglist() {
                 else
                     alert('something wrong in GET request')
             })
-            .then(data => setTraining(data.content))
+            .then(data => {
+                setTrainings(data.content);
+                setToggleCustomers(current => !current);
+            })
             .catch(err => console.error(err))
+    }
+
+    const getCustomerName = async (link) => {
+        try {
+            const response = await fetch(link);
+            const data = await response.json();
+            return data.firstname;
+        }
+        catch (error) {
+            console.log("error fetching the customer name!");
+            return "";
+        }
     }
 
     const addTraining = (training) => {
@@ -50,7 +67,7 @@ function Traininglist() {
         })
             .then(response => {
                 if (response.ok)
-                    getTraining();
+                    getTrainings();
                 else
                     alert('something wrong: ' + response.statusText)
             })
@@ -64,7 +81,7 @@ function Traininglist() {
                     if (response.ok) {
                         setOpen(true);
                         setMessage("Training deleted successfully");
-                        getTraining();
+                        getTrainings();
                     }
                     else {
                         alert('Something went wrong in deletion')
@@ -83,7 +100,7 @@ function Traininglist() {
                 if (response.ok) {
                     setOpen(true);
                     setMessage("Training updated successfully");
-                    getTraining();
+                    getTrainings();
                 }
                 else
                     alert('Something wrong')
@@ -92,15 +109,28 @@ function Traininglist() {
     }
 
     useEffect(() => {
-        getTraining();
+        getTrainings();
     }, [])
+
+    useEffect(() => {
+        const getCustomerNames = async () => {
+            const updatedItems = [];
+            for (const training of trainings) {
+                const name = await getCustomerName(training.links[2].href);
+                updatedItems.push({ ...training, name });
+            }
+            setTrainings(updatedItems);
+        };
+
+        getCustomerNames();
+    }, [toggleCustomers])
 
     return (
         <>
             <AddTraining addTraining={addTraining} />
             <div className='ag-theme-material' style={{ width: '90%', height: 600, margin: 'auto' }}>
                 <AgGridReact
-                    rowData={training}
+                    rowData={trainings}
                     columnDefs={columnDefs}
                     pagination={true}
                     paginationPageSize={10}
