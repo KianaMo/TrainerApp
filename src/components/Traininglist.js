@@ -7,6 +7,7 @@ import Snackbar from '@mui/material/Snackbar';
 import AddTraining from "./AddTraining";
 import EditTraining from "./EditTraining";
 import { API_URL } from "../constants";
+import Dayjs from 'dayjs';
 
 
 
@@ -16,8 +17,13 @@ function Traininglist() {
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState("");
 
+    const dateFormatter = (params) => {
+        const date = params.value;
+        return Dayjs(date).format('DD.MM.YYYY HH:mm');
+    }
+
     const [columnDefs] = useState([
-        { field: 'date', sortable: true, filter: true },
+        { field: 'date', sortable: true, filter: true, valueFormatter: dateFormatter },
         { field: 'duration', sortable: true, filter: true },
         { field: 'activity', sortable: true, filter: true },
         { field: 'name', sortable: true, filter: true, width: 100 },
