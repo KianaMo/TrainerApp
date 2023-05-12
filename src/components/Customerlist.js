@@ -7,8 +7,10 @@ import Snackbar from '@mui/material/Snackbar';
 import EditCustomer from "./EditCustomer";
 import AddCustomer from "./AddCustomer";
 import { API_URL } from "../constants";
+import { useNavigate } from 'react-router-dom';
 
 function Customerlist() {
+    const navigate = useNavigate();
     const [customer, setCustomer] = useState([]);
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState("");
@@ -28,6 +30,18 @@ function Customerlist() {
         {
             cellRenderer: params => <Button size='small' color='error' onClick={() => deleteCustomer(params)}>
                 Delete</Button>, width: 120
+        },
+        {
+            cellRenderer: params =>
+                <Button
+                    className="link-button"
+                    onClick={() =>
+                        navigate(`/traininglist?trainingsLink=${params.data.links[2].href}&customerName=${params.data.firstname} ${params.data.lastname}&customerLink=${params.data.links[1].href}`)
+                    }
+                >
+                    Trainings
+                </Button>
+            , width: 120
         }
     ])
 

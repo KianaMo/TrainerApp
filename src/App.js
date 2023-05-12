@@ -3,7 +3,8 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Link
+  Link,
+  useLocation
 } from "react-router-dom";
 import "./index.css";
 import Traininglist from './components/Traininglist';
@@ -13,24 +14,31 @@ import AppBar from '@mui/material/AppBar';
 
 
 function App() {
+  const location = useLocation();
   return (
     <div className="App">
       <AppBar position='static'>
         <Toolbar>
         </Toolbar>
       </AppBar>
-      <BrowserRouter>
-        <Link to="/traininglist">Traininglist</Link>{' '}
-        <Link to="/customerlist">Customerlist</Link>{' '}
-        <Routes>
-          <Route path="/traininglist" element={<Traininglist />} />
-          <Route path="/customerlist" element={<Customerlist />} />
-          <Route path="*" element={<Traininglist />} />
-        </Routes>
-      </BrowserRouter>
+      <Link to="/traininglist">List of All Trainings</Link>{' '}
+      <Link to="/customerlist">List of Customers</Link>{' '}
+      <Routes>
+        <Route path="/traininglist" element={<Traininglist key={location.key} />} />
+        <Route path="/customerlist" element={<Customerlist />} />
+        <Route path="*" element={<Traininglist />} />
+      </Routes>
     </div>
   );
 }
 
+function AppWrapper() {
+  return (
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+}
 
-export default App;
+
+export default AppWrapper;

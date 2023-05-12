@@ -5,6 +5,10 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import Dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export default function EditTraining(props) {
     const [open, setOpen] = React.useState(false);
@@ -13,6 +17,15 @@ export default function EditTraining(props) {
         duration: '',
         activity: ''
     });
+
+    const dateFormatter = (params) => {
+        const date = params.value;
+        return Dayjs(date).format('DD.MM.YYYY HH:mm');
+    }
+
+    const convertedDate = Dayjs('').format('MM/DD/YYYY');
+    //const convertedDate = dateFormatter(Dayjs(training.date));
+
 
     const handleClickOpen = () => {
         setTraining(
@@ -43,14 +56,12 @@ export default function EditTraining(props) {
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Edit Training information</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        value={training.date}
-                        onChange={e => setTraining({ ...training, date: e.target.value })}
-                        margin="dense"
-                        label="Date:"
-                        fullWidth
-                        variant="standard"
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            value={convertedDate}
+                            onChange={newDate => setTraining({ ...training, date: newDate })}
+                        />
+                    </LocalizationProvider>
                     <TextField
                         value={training.duration}
                         onChange={e => setTraining({ ...training, duration: e.target.value })}
@@ -63,7 +74,7 @@ export default function EditTraining(props) {
                         value={training.activity}
                         onChange={e => setTraining({ ...training, activity: e.target.value })}
                         margin="dense"
-                        label="Street Address"
+                        label="Activity"
                         fullWidth
                         variant="standard"
                     />

@@ -8,10 +8,21 @@ import AddTraining from "./AddTraining";
 import EditTraining from "./EditTraining";
 import { API_URL } from "../constants";
 import Dayjs from 'dayjs';
+import { useLocation } from 'react-router-dom';
 
 
 
 function Traininglist() {
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    let trainingsLink = searchParams.get('trainingsLink');
+    let customerName = searchParams.get('customerName');
+    let customerLink = searchParams.get('customerLink');
+    let editablePage = true;
+    if (!trainingsLink) {
+        trainingsLink = 'http://traineeapp.azurewebsites.net/api/trainings';
+        editablePage = false;
+    }
     const [trainings, setTrainings] = useState([]);
     const [toggleCustomers, setToggleCustomers] = useState(false);
     const [open, setOpen] = useState(false);
@@ -26,19 +37,19 @@ function Traininglist() {
         { field: 'date', sortable: true, filter: true, valueFormatter: dateFormatter },
         { field: 'duration', sortable: true, filter: true },
         { field: 'activity', sortable: true, filter: true },
-        { field: 'name', sortable: true, filter: true, width: 100 },
+        { field: 'name', sortable: true, filter: true, width: 100, hide: editablePage },
         {
             cellRenderer: params => <EditTraining params={params.data} updateTraining={updateTraining} />,
-            width: 120
+            width: 120, hide: !editablePage
         },
         {
             cellRenderer: params => <Button size='small' color='error' onClick={() => deleteTraining(params)}>
-                Delete</Button>, width: 120
+                Delete</Button>, width: 120, hide: !editablePage
         }
     ])
 
     const getTrainings = () => {
-        fetch('http://traineeapp.azurewebsites.net/api/trainings')
+        fetch(trainingsLink)
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -46,8 +57,12 @@ function Traininglist() {
                     alert('something wrong in GET request')
             })
             .then(data => {
-                setTrainings(data.content);
-                setToggleCustomers(current => !current);
+                if (data.content.length > 0 && data.content[0].hasOwnProperty("date")) {
+                    setTrainings(data.content);
+                    setToggleCustomers(current => !current);
+                } else {
+                    setTrainings([]);
+                }
             })
             .catch(err => console.error(err))
     }
@@ -65,7 +80,13 @@ function Traininglist() {
     }
 
     const addTraining = (training) => {
-        fetch(API_URL + '/trainings', {
+        const a = customerLink;
+        const b = trainingsLink;
+        if (editablePage) {
+            training.customer = customerLink;
+        }
+
+        fetch('http://traineeapp.azurewebsites.net/api/trainings', {
             method: 'POST',
             headers: { 'Content-type': 'application/json' },
             body: JSON.stringify(training)
@@ -127,21 +148,29 @@ function Traininglist() {
             }
             setTrainings(updatedItems);
         };
-
-        getCustomerNames();
+        if (!editablePage) {
+            getCustomerNames();
+        }
     }, [toggleCustomers])
 
     return (
         <>
-            <AddTraining addTraining={addTraining} />
-            <div className='ag-theme-material' style={{ width: '90%', height: 600, margin: 'auto' }}>
-                <AgGridReact
-                    rowData={trainings}
-                    columnDefs={columnDefs}
-                    pagination={true}
-                    paginationPageSize={10}
-                />
-            </div>
+            {editablePage ?
+                <h3>Trainings for {customerName}</h3> : <h3>Trainings for All Customers</h3>}
+            {editablePage &&
+                <AddTraining addTraining={addTraining} />}
+            {trainings.length > 0 ? (
+                <div className="ag-theme-material" style={{ width: "90%", height: 600, margin: "auto" }}>
+                    <AgGridReact
+                        rowData={trainings}
+                        columnDefs={columnDefs}
+                        pagination={true}
+                        paginationPageSize={10}
+                    />
+                </div>
+            ) : (
+                <div>No trainings available.</div>
+            )}
             <Snackbar
                 open={open}
                 message={message}

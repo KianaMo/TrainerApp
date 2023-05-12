@@ -15,7 +15,8 @@ export default function AddTraining({ addTraining }) {
     const [training, setTraining] = React.useState({
         date: Dayjs(),
         duration: '',
-        activity: ''
+        activity: '',
+        customer: ''
     });
 
     const handleClickOpen = () => {
