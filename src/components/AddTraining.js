@@ -39,7 +39,7 @@ export default function AddTraining({ addTraining }) {
 
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
+            <Button style={{ margin: '10px' }} variant="outlined" onClick={handleClickOpen}>
                 New Training
             </Button>
             <Dialog open={open} onClose={handleClose}>

@@ -9,8 +9,8 @@ import {
 import "./index.css";
 import Traininglist from './components/Traininglist';
 import Customerlist from './components/Customerlist';
-import Toolbar from '@mui/material/Toolbar';
-import AppBar from '@mui/material/AppBar';
+import TrainingCalendar from './components/TrainingCalendar';
+import { AppBar, Toolbar, Button } from '@mui/material';
 
 
 function App() {
@@ -19,13 +19,21 @@ function App() {
     <div className="App">
       <AppBar position='static'>
         <Toolbar>
+          <Button component={Link} to="/traininglist" color="inherit">
+            Trainings
+          </Button>
+          <Button component={Link} to="/customerlist" color="inherit">
+            Customers
+          </Button>
+          <Button component={Link} to="/trainingCalendar" color="inherit">
+            Calendar
+          </Button>
         </Toolbar>
       </AppBar>
-      <Link to="/traininglist">List of All Trainings</Link>{' '}
-      <Link to="/customerlist">List of Customers</Link>{' '}
       <Routes>
         <Route path="/traininglist" element={<Traininglist key={location.key} />} />
         <Route path="/customerlist" element={<Customerlist />} />
+        <Route path="/trainingCalendar" element={<TrainingCalendar />} />
         <Route path="*" element={<Traininglist />} />
       </Routes>
     </div>

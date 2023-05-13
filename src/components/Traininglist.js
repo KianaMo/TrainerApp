@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-material.css';
@@ -37,7 +37,7 @@ function Traininglist() {
         { field: 'date', sortable: true, filter: true, valueFormatter: dateFormatter },
         { field: 'duration', sortable: true, filter: true },
         { field: 'activity', sortable: true, filter: true },
-        { field: 'name', sortable: true, filter: true, width: 100, hide: editablePage },
+        { field: 'name', sortable: true, filter: true, hide: editablePage },
         {
             cellRenderer: params => <EditTraining params={params.data} updateTraining={updateTraining} />,
             width: 120, hide: !editablePage
@@ -71,7 +71,7 @@ function Traininglist() {
         try {
             const response = await fetch(link);
             const data = await response.json();
-            return data.firstname;
+            return data.firstname + " " + data.lastname;
         }
         catch (error) {
             console.log("error fetching the customer name!");
@@ -153,12 +153,22 @@ function Traininglist() {
         }
     }, [toggleCustomers])
 
+    function onExportClick() {
+        gridRef.current.api.exportDataAsCsv();
+    }
+    const gridRef = useRef();
+
     return (
         <>
-            {editablePage ?
-                <h3>Trainings for {customerName}</h3> : <h3>Trainings for All Customers</h3>}
-            {editablePage &&
-                <AddTraining addTraining={addTraining} />}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {editablePage ?
+                    <h3 style={{ margin: '10px' }} >Trainings for {customerName}</h3> : <h3>Trainings for All Customers</h3>}
+                {editablePage &&
+                    <AddTraining addTraining={addTraining} />}
+                <Button style={{ margin: '10px' }} variant="outlined" onClick={() => onExportClick()}>
+                    Download CSV
+                </Button>
+            </div>
             {trainings.length > 0 ? (
                 <div className="ag-theme-material" style={{ width: "90%", height: 600, margin: "auto" }}>
                     <AgGridReact
@@ -166,6 +176,7 @@ function Traininglist() {
                         columnDefs={columnDefs}
                         pagination={true}
                         paginationPageSize={10}
+                        ref={gridRef}
                     />
                 </div>
             ) : (

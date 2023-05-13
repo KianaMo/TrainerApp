@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-material.css';
@@ -112,15 +112,26 @@ function Customerlist() {
         getCustomer();
     }, [])
 
+    function onExportClick() {
+        gridRef.current.api.exportDataAsCsv();
+    }
+    const gridRef = useRef();
+
     return (
         <>
-            <AddCustomer addCustomer={addCustomer} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <AddCustomer addCustomer={addCustomer} />
+                <Button style={{ margin: '10px' }} variant="outlined" onClick={() => onExportClick()}>
+                    Download CSV
+                </Button>
+            </div>
             <div className='ag-theme-material' style={{ width: '90%', height: 600, margin: 'auto' }}>
                 <AgGridReact
                     rowData={customer}
                     columnDefs={columnDefs}
                     pagination={true}
                     paginationPageSize={10}
+                    ref={gridRef}
                 />
             </div>
             <Snackbar

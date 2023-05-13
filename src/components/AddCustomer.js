@@ -42,7 +42,7 @@ export default function AddCustomer({ addCustomer }) {
 
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
+            <Button style={{ margin: '10px' }} variant="outlined" onClick={handleClickOpen}>
                 New Customer
             </Button>
             <Dialog open={open} onClose={handleClose}>
