@@ -48,9 +48,9 @@ function App() {
 
 function AppWrapper() {
   return (
-    <HashRouter>
+    <BrowserRouter basename="/trainerapp">
       <App />
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
