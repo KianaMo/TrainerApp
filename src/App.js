@@ -6,7 +6,6 @@ import {
   Link,
   useLocation
 } from "react-router-dom";
-import { HashRouter } from "react-router-dom";
 import "./index.css";
 import Traininglist from './components/Traininglist';
 import Customerlist from './components/Customerlist';

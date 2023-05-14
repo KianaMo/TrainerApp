@@ -1,7 +1,7 @@
 {
   "name": "trainerapp",
   "version": "0.1.0",
-  "homepage": "https://KianaMo.github.io/TrainerApp",
+  "homepage": "http://KianaMo.github.io/TrainerApp",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.6",
