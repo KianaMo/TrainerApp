@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/trainerapp/static/css/main.f33d3341.css",
-    "main.js": "/trainerapp/static/js/main.ae530c9a.js",
+    "main.js": "/trainerapp/static/js/main.9ac4546e.js",
     "static/js/787.01468ab2.chunk.js": "/trainerapp/static/js/787.01468ab2.chunk.js",
     "index.html": "/trainerapp/index.html",
     "main.f33d3341.css.map": "/trainerapp/static/css/main.f33d3341.css.map",
-    "main.ae530c9a.js.map": "/trainerapp/static/js/main.ae530c9a.js.map",
+    "main.9ac4546e.js.map": "/trainerapp/static/js/main.9ac4546e.js.map",
     "787.01468ab2.chunk.js.map": "/trainerapp/static/js/787.01468ab2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f33d3341.css",
-    "static/js/main.ae530c9a.js"
+    "static/js/main.9ac4546e.js"
   ]
 }
