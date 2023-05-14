@@ -15,12 +15,19 @@ import { useLocation } from 'react-router-dom';
 function Traininglist() {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    let trainingsLink = searchParams.get('trainingsLink');
+    let trainingsLink = searchParams.get('trainingsLink')
+    if (trainingsLink && trainingsLink.startsWith('http://')) {
+        trainingsLink = trainingsLink.replace('http://', 'https://');
+    }
     let customerName = searchParams.get('customerName');
     let customerLink = searchParams.get('customerLink');
+    if (customerLink && customerLink.startsWith('http://')) {
+        customerLink = customerLink.replace('http://', 'https://');
+    }
+
     let editablePage = true;
     if (!trainingsLink) {
-        trainingsLink = 'http://traineeapp.azurewebsites.net/api/trainings';
+        trainingsLink = 'https://traineeapp.azurewebsites.net/api/trainings';
         editablePage = false;
     }
     const [trainings, setTrainings] = useState([]);
@@ -68,8 +75,12 @@ function Traininglist() {
     }
 
     const getCustomerName = async (link) => {
+        let httpsLink = link;
+        if (httpsLink && httpsLink.startsWith('http://')) {
+            httpsLink = httpsLink.replace('http://', 'https://');
+        }
         try {
-            const response = await fetch(link);
+            const response = await fetch(httpsLink);
             const data = await response.json();
             return data.firstname + " " + data.lastname;
         }
@@ -86,7 +97,7 @@ function Traininglist() {
             training.customer = customerLink;
         }
 
-        fetch('http://traineeapp.azurewebsites.net/api/trainings', {
+        fetch('https://traineeapp.azurewebsites.net/api/trainings', {
             method: 'POST',
             headers: { 'Content-type': 'application/json' },
             body: JSON.stringify(training)
@@ -102,8 +113,12 @@ function Traininglist() {
     }
 
     const deleteTraining = (params) => {
+        let httpsLink = params.data.links[0].href;
+        if (httpsLink && httpsLink.startsWith('http://')) {
+            httpsLink = httpsLink.replace('http://', 'https://');
+        }
         if (window.confirm('Are you sure?'))
-            fetch(params.data.links[0].href, { method: 'DELETE' })
+            fetch(httpsLink, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
                         setOpen(true);
@@ -118,7 +133,11 @@ function Traininglist() {
     }
 
     const updateTraining = (updatedTraining, url) => {
-        fetch(url, {
+        let httpsLink = url;
+        if (httpsLink && httpsLink.startsWith('http://')) {
+            httpsLink = httpsLink.replace('http://', 'https://');
+        }
+        fetch(httpsLink, {
             method: 'PUT',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify(updatedTraining)
