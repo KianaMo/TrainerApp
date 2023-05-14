@@ -48,7 +48,7 @@ function App() {
 
 function AppWrapper() {
   return (
-    <BrowserRouter basename="/trainerapp">
+    <BrowserRouter basename="/TrainerApp">
       <App />
     </BrowserRouter>
   );
